@@ -1,0 +1,8 @@
+rich
+python-dotenv
+openai
+anthropic
+requests
+pypdf
+gradio
+ipython
