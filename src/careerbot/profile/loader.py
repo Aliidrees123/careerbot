@@ -1,0 +1,1 @@
+# Reads extrernal data and returns raw strings
