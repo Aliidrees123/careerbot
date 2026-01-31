@@ -1,0 +1,1 @@
+# Defines tools and their JSON schemas for the LLM

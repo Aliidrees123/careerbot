@@ -1,0 +1,1 @@
+# Chat loop - build messages, calls LLM, handles tool calls, and returns output
