@@ -30,7 +30,7 @@ class ChatOrchestrator:
             "role": "user",
             "content": [
                 {
-                    "type": "text",
+                    "type": "input_text",
                     "text": message
                 }
             ]
@@ -47,7 +47,7 @@ class ChatOrchestrator:
                 "role": item["role"],
                 "content": [
                     {
-                        "type": "text",
+                        "type": "input_text",
                         "text": item["content"]
                     }
                 ]
