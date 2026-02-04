@@ -1,6 +1,8 @@
 from careerbot.config import load_settings
 from careerbot.llm.openai_client import build_client
 from careerbot.chat.orchestrator import ChatOrchestrator
+from careerbot.user_profile.loader import load_profile
+from careerbot.user_profile.prompt import build_profile_context
 
 
 import gradio as gr
@@ -13,6 +15,10 @@ def main():
 
     client = build_client(settings.openai_api_key)
 
+    profile_data = load_profile(settings.summary_txt_path, settings.linkedin_pdf_path)
+
+    profile_context = build_profile_context(profile_data=profile_data)
+
     system_message = {
         "role": "system",
         "content": [ 
@@ -23,7 +29,7 @@ def main():
         ]
     }
 
-    orchestrator = ChatOrchestrator(client=client, model=settings.openai_model, system_message=system_message)
+    orchestrator = ChatOrchestrator(client=client, model=settings.openai_model, system_message=system_message, profile_context=profile_context)
 
     app = gr.ChatInterface(fn=orchestrator)
 
