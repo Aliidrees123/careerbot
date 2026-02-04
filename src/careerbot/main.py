@@ -19,8 +19,6 @@ def main():
 
     profile_context = build_profile_context(profile_data=profile_data)
 
-    print(profile_context)
-
     system_message = {
         "role": "system",
         "content": [ 
@@ -31,7 +29,7 @@ def main():
         ]
     }
 
-    orchestrator = ChatOrchestrator(client=client, model=settings.openai_model, system_message=system_message)
+    orchestrator = ChatOrchestrator(client=client, model=settings.openai_model, system_message=system_message, profile_context=profile_context)
 
     app = gr.ChatInterface(fn=orchestrator)
 
