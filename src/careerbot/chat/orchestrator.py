@@ -1,5 +1,6 @@
 from careerbot.llm.openai_client import request_response
 from openai import OpenAI
+from typing import Any
 
 # Chat loop - build messages, calls LLM, handles tool calls, and returns output
 class ChatOrchestrator:
@@ -36,28 +37,37 @@ class ChatOrchestrator:
                 }
             ]
         }
+    
+    # Ensure history is a String, not List
+    def _normalise_history_content_to_text(self, content) -> str:
+        if isinstance(content, str):
+            return content
+        
+        if isinstance(content, list):
+            parts: list[str] = []
+            for block in content:
+                if isinstance(block, dict):
+                    text = block.get("text")
+                    if isinstance(text, str):
+                        parts.append(text)
+            return "\n".join(parts)
+        
+        return str(content)
+
+    # Ensure correct role is used for history
+    def _history_block_type_for_role(self, role: str) -> str:
+        return "output_text" if role == "assistant" else "input_text"
 
     # Format the chat history from Gradio
     def _format_gradio_history(self, history: list[dict]) -> list[dict]:
         formatted_history = []
 
         for item in history:
-            role = item["role"]
-            content = item["content"]
+            role = item.get("role", "user")
+            content = item.get("content", "")
 
-            if isinstance(content, list):
-                text_parts = []
-                for block in content:
-                    if isinstance(block, dict) and "text" in block:
-                        text_parts.append(block["text"])
-                content_text = "\n".join(text_parts)
-            else: 
-                content_text = content
-
-            if role == "assistant":
-                block_type = "output_text"
-            else:
-                block_type = "input_text"
+            content_text = self._normalise_history_content_to_text(content)
+            block_type = self._history_block_type_for_role(role)
 
             formatted_history.append(
                 {
