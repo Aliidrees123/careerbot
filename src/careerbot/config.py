@@ -11,7 +11,12 @@ class Settings:
     openai_model: str
     summary_txt_path: Path
     linkedin_pdf_path: Path
+    debug: bool
 
+def _parse_bool_env(name:str) -> bool:
+    value = os.getenv(name, "")
+    return value.strip().lower() == "true"
+    
 def load_settings() -> Settings:
     load_dotenv(override=True)
 
@@ -20,8 +25,11 @@ def load_settings() -> Settings:
 
     openai_api_key = os.getenv("OPENAI_API_KEY", "").strip()
     openai_model = os.getenv("OPENAI_MODEL", "gpt-5-mini").strip()
+
     summary_txt_path = data_dir / "summary.txt"
     linkedin_pdf_path = data_dir / "linkedin.pdf"
+
+    debug = _parse_bool_env("CAREERBOT_DEBUG")
 
     if not openai_api_key:
         raise RuntimeError("Missing OPENAI_API_KEY in .env")
