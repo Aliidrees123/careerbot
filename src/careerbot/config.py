@@ -44,7 +44,8 @@ def load_settings() -> Settings:
         openai_api_key=openai_api_key,
         openai_model=openai_model,
         summary_txt_path=summary_txt_path,
-        linkedin_pdf_path=linkedin_pdf_path
+        linkedin_pdf_path=linkedin_pdf_path,
+        debug=debug
     )
 
 
