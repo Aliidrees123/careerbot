@@ -54,6 +54,10 @@ record_role_interest_tool = {
                 "type": "string",
                 "description": "The title of the job being hired for"
             },
+            "responsibilities": {
+                "type": "string",
+                "description": "A brief overview of the key responsibilities, if the user provided it"
+            },
             "company": {
                 "type": "string",
                 "description": "The name of the company the role is for, if the user provided it"
@@ -61,10 +65,6 @@ record_role_interest_tool = {
             "level": {
                 "type": "string",
                 "description": "The level of experience required for the role, if the user provided it"
-            },
-            "responsibilities": {
-                "type": "string",
-                "description": "A brief overview of the key responsibilities, if the user provided it"
             },
             "salary": {
                 "type": "string",
