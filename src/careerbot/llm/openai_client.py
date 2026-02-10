@@ -11,7 +11,7 @@ def build_client(api_key: str) -> OpenAI:
     return OpenAI(api_key = api_key)
 
 # Sends the request to the LLM and returns the LLM's response
-def request_response(*, client: OpenAI, model: str, input: list[dict]) -> dict:
+def request_response(*, client: OpenAI, model: str, input: list[dict], tools: list):
 
     if not model or not model.strip():
         raise ValueError("Missing OpenAI model")
@@ -19,8 +19,12 @@ def request_response(*, client: OpenAI, model: str, input: list[dict]) -> dict:
     if not input or not isinstance(input, list):
         raise ValueError("Input must be a non-empty list of messages")
     
+    if not tools or not isinstance(tools, list):
+        raise ValueError("Tools must be a non-empty list of tools")
+    
     response = client.responses.create(
         model=model,
+        tools=tools,
         input=input
     )
     return response
