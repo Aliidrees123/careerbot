@@ -84,7 +84,6 @@ def handle_record_unknown_question(args: dict, *, out_dir: Path) -> ToolResult:
 def handle_record_role_interest(args: dict, *, out_dir: Path) -> ToolResult:
     
     title = (args.get("title") or "").strip()
-    responsibilities = (args.get("responsibilities") or "").strip()
 
     if not title:
         return ToolResult(
@@ -94,18 +93,10 @@ def handle_record_role_interest(args: dict, *, out_dir: Path) -> ToolResult:
             error="Missing required field: title"
         )
     
-    if not responsibilities:
-        return ToolResult(
-            tool_name="record_role_interest",
-            ok=False,
-            content="",
-            error="Missing required field: responsibilities"
-        )
-    
     record = {
         "timestamp": _utc_now_iso(),
         "title": title,
-        "responsibilities": responsibilities,
+        "responsibilities": (args.get("responsibilities") or "").strip() or None,
         "company": (args.get("company") or "").strip() or None,
         "level": (args.get("level") or "").strip() or None,
         "salary": (args.get("salary") or "").strip() or None,
@@ -118,7 +109,7 @@ def handle_record_role_interest(args: dict, *, out_dir: Path) -> ToolResult:
     return ToolResult(
         tool_name="record_role_interest",
         ok=True,
-        content=json.dumps({"saved": True, "title": title, "responsibilities": responsibilities}, ensure_ascii=False)
+        content=json.dumps({"saved": True, "title": title}, ensure_ascii=False)
     )
 
 # Execute the tool

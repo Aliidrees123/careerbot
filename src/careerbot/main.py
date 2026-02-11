@@ -3,6 +3,7 @@ from careerbot.llm.openai_client import build_client
 from careerbot.chat.orchestrator import ChatOrchestrator
 from careerbot.user_profile.loader import load_profile
 from careerbot.user_profile.prompt import build_profile_context
+from careerbot.tools.definitions import TOOLS
 
 
 import gradio as gr
@@ -29,7 +30,7 @@ def main():
         ]
     }
 
-    orchestrator = ChatOrchestrator(client=client, model=settings.openai_model, system_message=system_message, profile_context=profile_context)
+    orchestrator = ChatOrchestrator(client=client, model=settings.openai_model, system_message=system_message, profile_context=profile_context, tools=TOOLS, tool_results_dir=settings.tool_results_dir)
 
     app = gr.ChatInterface(fn=orchestrator)
 
