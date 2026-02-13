@@ -2,7 +2,7 @@
 record_user_details_tool = {
     "type": "function",
     "name": "record_user_details",
-    "description": "Use this tool to record that a user is interested in being in touch and provided an email address",
+    "description": "Record contact details when the user provides an email address or clearly invites Ali to follow up. Use only information the user explicitly provided (do not guess missing fields).",
     "parameters": {
         "type": "object",
         "properties": {
@@ -31,7 +31,7 @@ record_user_details_tool = {
 record_unknown_question_tool = {
     "type": "function",
     "name": "record_unknown_question",    
-    "description": "Use this tool to record any question that couldn't be answered because you did not know the answer",
+    "description":  "Record a question about Ali that you cannot answer from the provided profile context and conversation. Use this only after asking at most one brief clarifying question if it would help.",
     "parameters": {
         "type": "object",
         "properties": {
@@ -48,7 +48,7 @@ record_unknown_question_tool = {
 record_role_interest_tool = {
     "type": "function",
     "name": "record_role_interest",
-    "description": "Use this tool when a user indicates they are actively hiring for a role and provides details about it",
+    "description": "Record hiring intent when the user indicates they are hiring for a role and provides any role details (at minimum the job title). Use only details explicitly stated by the user.",
     "parameters": {
         "type": "object",
         "properties": {
