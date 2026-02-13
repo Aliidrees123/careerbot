@@ -11,6 +11,7 @@ class Settings:
     openai_model: str
     summary_txt_path: Path
     linkedin_pdf_path: Path
+    tool_results_dir: Path
     debug: bool
 
 def _parse_bool_env(name:str) -> bool:
@@ -28,6 +29,7 @@ def load_settings() -> Settings:
 
     summary_txt_path = data_dir / "summary.txt"
     linkedin_pdf_path = data_dir / "linkedin.pdf"
+    tool_results_dir = project_root / "toolresults"
 
     debug = _parse_bool_env("CAREERBOT_DEBUG")
 
@@ -45,6 +47,7 @@ def load_settings() -> Settings:
         openai_model=openai_model,
         summary_txt_path=summary_txt_path,
         linkedin_pdf_path=linkedin_pdf_path,
+        tool_results_dir=tool_results_dir,
         debug=debug
     )
 

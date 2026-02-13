@@ -15,6 +15,7 @@ Thumbs.db
 
 # Data
 data/
+toolresults/
 
 # Metadata
 careerbot.egg-info/
