@@ -32,6 +32,8 @@ class ChatOrchestrator:
         input_items = self._build_model_request(history=history, message=message)
         # Fallback in case of no response
         last_text = ""
+        # Track response.output ids that are already appended
+        seen_output_ids = set() 
 
         # Loop to allow for tool calls until max_iterations
         for _ in range(max_iterations):
@@ -56,7 +58,18 @@ class ChatOrchestrator:
             # If no tools called then return response
             if not tool_calls:
                 return response.output_text
-            
+
+            # Appends the response.output to input_items if we haven't seen the id before
+            for item in response.output:
+                item_id = getattr(item, "id", None)
+                if not item_id:
+                    input_items.append(item)
+                    continue
+                if item_id in seen_output_ids:
+                    continue
+                seen_output_ids.add(item_id)
+                input_items.append(item)
+
             # Execute each tool call and append tool outputs
             for call in tool_calls:
                 # Parse tool args
@@ -87,14 +100,14 @@ class ChatOrchestrator:
                 else:
                     out_str = result.error if isinstance(result.error, str) else json.dumps({"error": result.error}, ensure_ascii=False)
 
-                tool_output_item = {
-                    "type": "function_call_output",
-                    "call_id": call.call_id,
-                    "output": out_str
-                }
-
-                input_items.append(tool_output_item)
-
+                input_items.append(
+                    {
+                        "type": "function_call_output",
+                        "call_id": call.call_id,
+                        "output": out_str
+                    }
+                )
+                
         return last_text or "I couldn't complete that action right now."
 
     # Format the user's input
