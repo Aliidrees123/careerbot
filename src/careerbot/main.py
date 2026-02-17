@@ -65,7 +65,7 @@ def main():
 
     client = build_client(settings.openai_api_key)
 
-    profile_data = load_profile(settings.summary_txt_path, settings.linkedin_pdf_path)
+    profile_data = load_profile(settings.profile_store_path)
 
     profile_context = build_profile_context(profile_data=profile_data)
 

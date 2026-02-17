@@ -1,39 +1,25 @@
 from dataclasses import dataclass
-from pypdf import PdfReader
+from pathlib import Path
+import json
 
 # Reads extrernal data and returns raw strings
 
 @dataclass
 class ProfileData:
-    summary_text: str | None
-    linkedin_text: str | None
+    data: dict
 
-def _read_summary_text(file_path: str) -> str | None:
-    with open (file_path, "r", encoding="utf-8") as f:
-        summary_text = f.read().strip()
 
-    if not summary_text:
-        return None
+def _read_json(path: str) -> dict:
+    p = Path(path)
+    if not p.exists():
+        raise FileNotFoundError(f"Profile store not found: {p}")
 
-    return summary_text
+    with p.open("r", encoding="utf8") as f:
+        return json.load(f)
 
-def _read_linkedin_data(file_path: str) -> str | None:
-    reader = PdfReader(file_path)
-    linkedin_summary = ""
+def load_profile(profile_store_path: str) -> ProfileData:
+    data = _read_json(profile_store_path)
+    if not isinstance(data, dict):
+        raise ValueError(f"profile_store.json must contain a JSON object at the top level")
 
-    for page in reader.pages:
-        text = page.extract_text()
-        if text:
-            linkedin_summary += text
-
-    linkedin_summary = linkedin_summary.strip()
-    if linkedin_summary == "":
-        return None
-        
-    return linkedin_summary
-
-def load_profile(summary_file_path: str, linkedin_file_path: str) -> ProfileData:
-    summary_text = _read_summary_text(summary_file_path)
-    linkedin_text = _read_linkedin_data(linkedin_file_path)
-
-    return ProfileData(summary_text=summary_text, linkedin_text=linkedin_text)
+    return ProfileData(data=data)
