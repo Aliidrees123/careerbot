@@ -9,9 +9,7 @@ import gradio as gr
 
 # Entry point to bring everything together and launch the app
 
-def main():
-
-    system_message_text = """
+system_message_text = """
         You are CareerBot, a conversational assistant that answers questions about Ali's career, skills, and experience on Ali's behalf.
 
         Your audience is typically recruiters, hiring managers, and collaborators who want to understand Ali's background without waiting for a direct reply.
@@ -98,30 +96,33 @@ def main():
         - Avoid hype or aggressive sales language.
         - Portray Ali positively using documented responsibilities, technologies, and outcomes.
         """
-    
-    settings = load_settings()
 
+def build_app() -> gr.ChatInterface:
+    settings = load_settings()
     client = build_client(settings.openai_api_key)
 
     profile_data = load_profile(settings.profile_store_path)
-
     profile_context = build_profile_context(profile_data=profile_data)
 
     system_message = {
         "role": "system",
-        "content": [ 
-            {
-                "type": "input_text",
-                "text": system_message_text
-            }
-        ]
+        "content": [{"type": "input_text", "text": system_message_text}],
     }
 
-    orchestrator = ChatOrchestrator(client=client, model=settings.openai_model, system_message=system_message, profile_context=profile_context, tools=TOOLS, tool_results_dir=settings.tool_results_dir)
+    orchestrator = ChatOrchestrator(
+        client=client,
+        model=settings.openai_model,
+        system_message=system_message,
+        profile_context=profile_context,
+        tools=TOOLS,
+        tool_results_dir=settings.tool_results_dir,
+    )
 
-    app = gr.ChatInterface(fn=orchestrator)
+    # IMPORTANT: ensure Gradio passes history as list-of-dicts messages
+    return gr.ChatInterface(fn=orchestrator, type="messages")
 
-    app.launch()
+
+app = build_app()
 
 if __name__ == "__main__":
-    main()
+    app.launch()
