@@ -1,3 +1,6 @@
-# Careerbot
-
-A chatbot designed to speak about an individual's skills, experience, and career details.
+---
+title: CareerBot
+app_file: src/careerbot/main.py
+sdk: gradio
+sdk_version: 6.5.1
+---
