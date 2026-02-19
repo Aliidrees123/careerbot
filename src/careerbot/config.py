@@ -37,12 +37,6 @@ def load_settings() -> Settings:
 
     if not openai_api_key:
         raise RuntimeError("Missing OPENAI_API_KEY in .env")
-    
-    if not summary_txt_path.exists():
-        raise RuntimeError(f"Missing summary.txt at {summary_txt_path}")
-    
-    if not linkedin_pdf_path.exists():
-        raise RuntimeError(f"Missing linkedin.pdf at {linkedin_pdf_path}")
 
     return Settings(
         openai_api_key=openai_api_key,
