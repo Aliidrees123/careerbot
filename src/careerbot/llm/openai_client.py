@@ -25,6 +25,10 @@ def request_response(*, client: OpenAI, model: str, input: list[dict], tools: li
     response = client.responses.create(
         model=model,
         tools=tools,
-        input=input
+        input=input,
+        max_output_tokens=300,
+        reasoning={
+            "effort": "low"
+        }
     )
     return response
