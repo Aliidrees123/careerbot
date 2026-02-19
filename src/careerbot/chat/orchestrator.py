@@ -27,7 +27,7 @@ class ChatOrchestrator:
     def chat(self, *, message: str, history: list[dict]) -> str:
 
         # Maximum tool calls
-        max_iterations = 3
+        max_iterations = 10
         # New message + history
         input_items = self._build_model_request(history=history, message=message)
         # Fallback in case of no response
@@ -46,18 +46,19 @@ class ChatOrchestrator:
                 tools=self._tools
             )
 
-            if getattr(response, "output_text", ""):
-                last_text = response.output_text
+            assistant_text = self._extract_assistant_text(response)
+            if assistant_text:
+                last_text = assistant_text
 
             # List of tools that were called
             tool_calls = [
-            item for item in response.output
-            if item.type == "function_call"
-            ]
+                item for item in response.output
+                if item.type == "function_call"
+                ]
 
             # If no tools called then return response
             if not tool_calls:
-                return response.output_text
+                break
 
             # Appends the response.output to input_items if we haven't seen the id before
             for item in response.output:
@@ -108,7 +109,19 @@ class ChatOrchestrator:
                     }
                 )
                 
-        return last_text or "I couldn't complete that action right now."
+        if last_text:
+            return last_text
+
+        final_response = request_response(
+            client=self._client,
+            model=self._model,
+            input=input_items,
+            tools=[]
+            )
+
+        final_text = self._extract_assistant_text(final_response)
+
+        return final_text or "I couldn't complete that action right now."
 
     # Format the user's input
     def _wrap_text(self, message: str) -> dict:
@@ -197,3 +210,28 @@ class ChatOrchestrator:
         model_request.append(user_message)
 
         return model_request
+
+    # Get text from responses.output
+    def _extract_assistant_text(self, response) -> str:
+        texts: list[str] = []
+
+        for item in getattr(response, "output", []):
+
+            # direct output_text items
+            if getattr(item, "type", None) == "output_text":
+                txt = getattr(item, "text", "")
+                if txt:
+                    texts.append(txt)
+                continue
+
+            # message items with content blocks
+            if getattr(item, "type", None) == "message":
+                for block in getattr(item, "content", []):
+
+                    btype = block.get("type") if isinstance(block, dict) else getattr(block, "type", None)
+                    btext = block.get("text") if isinstance(block, dict) else getattr(block, "text", "")
+
+                    if btype == "output_text" and btext:
+                        texts.append(btext)
+
+        return "\n".join(texts).strip()
