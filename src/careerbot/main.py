@@ -117,7 +117,7 @@ def build_app() -> gr.ChatInterface:
         tool_results_dir=settings.tool_results_dir,
     )
 
-    return gr.ChatInterface(fn=orchestrator, type="messages")
+    return gr.ChatInterface(fn=orchestrator)
 
 app = build_app()
 
