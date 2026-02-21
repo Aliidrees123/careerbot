@@ -8,7 +8,6 @@ from careerbot.tools.definitions import TOOLS
 import gradio as gr
 
 # Entry point to bring everything together and launch the app
-
 system_message_text = """
         You are CareerBot, a conversational assistant that answers questions about Ali's career, skills, and experience on Ali's behalf.
 
@@ -118,9 +117,7 @@ def build_app() -> gr.ChatInterface:
         tool_results_dir=settings.tool_results_dir,
     )
 
-    # IMPORTANT: ensure Gradio passes history as list-of-dicts messages
     return gr.ChatInterface(fn=orchestrator, type="messages")
-
 
 app = build_app()
 
