@@ -14,8 +14,9 @@ __pycache__/
 Thumbs.db
 
 # Data
-data/
-toolresults/
+toolresults/role_interest.jsonl
+toolresults/unknown_question.jsonl
+toolresults/user_details.jsonl
 
 # Metadata
 careerbot.egg-info/
